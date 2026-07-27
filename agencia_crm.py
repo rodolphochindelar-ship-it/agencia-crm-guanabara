@@ -617,7 +617,7 @@ def orquestrar_calendario_mensal(req_dados):
 
     temas = req_dados.get("temas", [])
     somente_grade = bool(req_dados.get("somente_grade", False))
-    n_var = int(req_dados.get("variacoes_por_combo", 6))
+    n_var = int(req_dados.get("variacoes_por_combo", 4))
 
     print(f"\n[+] Montando grade mensal de {mes:02d}/{ano} com {len(temas)} tema(s)...")
     grade = montar_grade_mensal(mes, ano, temas)
@@ -655,7 +655,7 @@ def orquestrar_calendario_mensal(req_dados):
             "qtd": len(info["itens"]), "variacoes": len(variacoes),
             "status": status, "revisao": revisao
         })
-        time.sleep(1.2)  # rate limiting Gemini
+        time.sleep(0.4)  # rate limiting Gemini
 
     return {"mes": mes, "ano": ano, "total": len(grade), "grade": grade, "combos": resumo_combos}
 
