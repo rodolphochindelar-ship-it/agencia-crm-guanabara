@@ -1,714 +1,1260 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agência de CRM Guanabara</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-color: #0b0e14; --card-bg: rgba(18, 24, 35, 0.7); --border-color: rgba(255, 255, 255, 0.08);
-            --primary: #10b981; --primary-glow: rgba(16, 185, 129, 0.2); --gold: #f59e0b; --gold-glow: rgba(245, 158, 11, 0.2);
-            --danger: #ef4444; --text-main: #f3f4f6; --text-muted: #9ca3af; --accent-blue: #3b82f6; --accent-purple: #8b5cf6;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden;
-            background-image: radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.04) 0%, transparent 45%), radial-gradient(circle at 90% 80%, rgba(245, 158, 11, 0.04) 0%, transparent 45%); }
-        header { padding: 20px 40px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 100; background: rgba(11, 14, 20, 0.85); }
-        .logo { display: flex; align-items: center; gap: 12px; font-size: 24px; font-weight: 800; letter-spacing: 0.5px; color: #fff; }
-        .logo span { background: linear-gradient(135deg, var(--primary), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .logo-icon { font-size: 28px; animation: bounce 2s infinite ease-in-out; }
-        .nav-tabs { display: flex; gap: 8px; background: rgba(255, 255, 255, 0.03); padding: 4px; border-radius: 12px; border: 1px solid var(--border-color); }
-        .tab-btn { background: transparent; border: none; color: var(--text-muted); padding: 8px 18px; font-size: 14px; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px; }
-        .tab-btn.active { background: rgba(255, 255, 255, 0.08); color: #fff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); }
-        .tab-btn:hover:not(.active) { color: #fff; background: rgba(255, 255, 255, 0.03); }
-        .badge-status { background: rgba(16, 185, 129, 0.1); color: var(--primary); padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 1px solid rgba(16, 185, 129, 0.2); display: flex; align-items: center; gap: 6px; }
-        .badge-status.off { background: rgba(239,68,68,0.1); color: var(--danger); border-color: rgba(239,68,68,0.2); }
-        .container { max-width: 1500px; margin: 32px auto; padding: 0 24px; display: grid; grid-template-columns: 400px 1fr; gap: 32px; flex-grow: 1; }
-        .glass-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 24px; padding: 26px; backdrop-filter: blur(16px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); margin-bottom: 22px; }
-        h2 { font-size: 17px; font-weight: 700; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; color: #fff; }
-        h4 { color: #fff; }
-        .form-group { margin-bottom: 14px; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted); }
-        input, select, textarea { width: 100%; padding: 11px 13px; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-color); border-radius: 10px; color: #fff; font-size: 14px; outline: none; transition: all 0.2s ease; }
-        input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 10px var(--primary-glow); background: rgba(255, 255, 255, 0.06); }
-        textarea { resize: vertical; min-height: 60px; }
-        button.btn-primary { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary), #059669); color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 12px var(--primary-glow); display: flex; justify-content: center; align-items: center; gap: 8px; }
-        button.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35); }
-        button.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-        button.btn-ghost { width: 100%; padding: 11px; background: rgba(255,255,255,0.04); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; margin-bottom: 10px; }
-        button.btn-ghost:hover { background: rgba(255,255,255,0.08); border-color: var(--primary); }
-        .panel-content { display: none; } .panel-content.active { display: block; }
-        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 70px 40px; color: var(--text-muted); }
-        .empty-icon { font-size: 54px; margin-bottom: 16px; opacity: 0.5; }
-        .empty-state h3 { color: #fff; margin-bottom: 6px; }
-        .agents-progress { display: none; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
-        .agent-pill { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); padding: 14px; border-radius: 16px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 6px; }
-        .agent-pill.active { border-color: var(--primary); background: rgba(16, 185, 129, 0.05); box-shadow: 0 0 12px var(--primary-glow); }
-        .agent-pill.completed { border-color: var(--gold); background: rgba(245, 158, 11, 0.04); }
-        .output-viewer { display: none; animation: fadeIn 0.4s ease; }
-        .approval-banner { border: 1px solid var(--primary); background: rgba(16, 185, 129, 0.04); padding: 18px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; flex-wrap: wrap; gap: 12px; }
-        .checklist-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 12px; }
-        .checklist-item { background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); padding: 10px 14px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; font-size: 13px; gap: 10px; }
-        .checklist-badge { padding: 4px 8px; border-radius: 6px; font-weight: 700; font-size: 10px; text-transform: uppercase; white-space: nowrap; }
-        .badge-green { background: rgba(16, 185, 129, 0.15); color: var(--primary); border: 1px solid rgba(16, 185, 129, 0.2); }
-        .badge-red { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); }
-        .badge-yellow { background: rgba(245, 158, 11, 0.15); color: var(--gold); border: 1px solid rgba(245, 158, 11, 0.2); }
-        .scheduler-table-container { background: rgba(255, 255, 255, 0.01); border: 1px solid var(--border-color); border-radius: 16px; overflow: auto; margin-top: 14px; max-height: 620px; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
-        th { background: #12161f; color: var(--text-muted); font-weight: 700; padding: 11px 13px; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 2; }
-        td { padding: 11px 13px; border-bottom: 1px solid var(--border-color); color: #d1d5db; vertical-align: top; }
-        tr:last-child td { border-bottom: none; }
-        .td-title { font-weight: 700; color: #fff; }
-        .virtual-console { background: #06090e; border: 1px solid var(--border-color); border-radius: 14px; padding: 16px; font-family: 'Courier New', monospace; font-size: 12px; color: #10b981; height: 130px; overflow-y: auto; margin-bottom: 22px; box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5); }
-        /* chips */
-        .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
-        .chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 20px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.03); font-size: 13px; font-weight: 600; }
-        .chip.perene { border-color: rgba(16,185,129,0.35); background: rgba(16,185,129,0.08); color: #d1fae5; }
-        .chip .x { cursor: pointer; color: var(--text-muted); font-weight: 800; line-height: 1; }
-        .chip .x:hover { color: var(--danger); }
-        .suggest { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-        .suggest .s { cursor: pointer; padding: 6px 11px; border-radius: 20px; border: 1px dashed var(--border-color); font-size: 12px; color: var(--text-muted); }
-        .suggest .s:hover { border-color: var(--primary); color: var(--primary); }
-        .add-inline { display: flex; gap: 8px; margin-top: 10px; }
-        .add-inline input { flex: 1; }
-        .add-inline button { width: auto; padding: 11px 16px; margin: 0; }
-        .esp-card { border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; margin-bottom: 8px; background: rgba(255,255,255,0.02); }
-        .esp-card .top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-        .esp-card .meta { color: var(--text-muted); font-size: 11px; margin-top: 3px; }
-        .tag { padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
-        .tag-evento { background: rgba(139,92,246,0.15); color: var(--accent-purple); }
-        .tag-recorrente { background: rgba(59,130,246,0.15); color: var(--accent-blue); }
-        .rm-btn { background: transparent; border: none; color: var(--danger); cursor: pointer; font-size: 16px; padding: 0 4px; width: auto; }
-        .seg-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-        .seg-tag { padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 12px; cursor: pointer; user-select: none; }
-        .seg-tag.on { background: rgba(16,185,129,0.15); color: var(--primary); border-color: rgba(16,185,129,0.3); }
-        .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; align-items: center; }
-        .filters select { width: auto; padding: 8px 10px; }
-        .kpi { margin-left: auto; font-size: 12px; color: var(--text-muted); }
-        .day-header td { background: rgba(255,255,255,0.04); font-weight: 800; color: #fff; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
-        .nat-perene { color: var(--primary); } .nat-evento { color: var(--accent-purple); } .nat-recorrente { color: var(--accent-blue); }
-        .legend { display: flex; gap: 16px; font-size: 12px; color: var(--text-muted); margin-top: 8px; flex-wrap: wrap; }
-        .legend span { display: flex; align-items: center; gap: 6px; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-        .hint { font-size: 12px; color: var(--text-muted); margin: 4px 0 12px; line-height: 1.5; }
-        details.adv { margin-top: 10px; border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 12px; }
-        details.adv summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text-muted); }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        .pulse { animation: pulse-anim 1.5s infinite; } @keyframes pulse-anim { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Análise CRM — Grupo Guanabara</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
 
-        /* Login overlay */
-        .overlay { position: fixed; inset: 0; background: rgba(6,9,14,0.92); backdrop-filter: blur(8px); z-index: 999; display: none; align-items: center; justify-content: center; }
-        .overlay.show { display: flex; }
-        .login-box { width: 360px; max-width: 90vw; }
-        .login-box .glass-card { margin: 0; }
-        .login-err { color: var(--danger); font-size: 13px; margin-top: 8px; display: none; }
-        /* Design briefing */
-        .canal-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
-        .canal-tag { padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border-color); font-size: 13px; cursor: pointer; user-select: none; font-weight: 600; }
-        .canal-tag.on { background: rgba(139,92,246,0.15); color: var(--accent-purple); border-color: rgba(139,92,246,0.35); }
-        .peca-card { border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; margin-bottom: 16px; background: rgba(255,255,255,0.02); }
-        .peca-card h3 { color: #fff; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
-        .peca-card .fmt { color: var(--text-muted); font-size: 12px; margin-bottom: 14px; }
-        .peca-sec { margin-bottom: 12px; }
-        .peca-sec .k { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--accent-purple); font-weight: 700; margin-bottom: 4px; }
-        .peca-sec .v { font-size: 14px; color: #d1d5db; line-height: 1.5; }
-        .swatches { display: flex; gap: 8px; margin-top: 4px; }
-        .sw { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border-color); }
-        .prompt-box { background: #06090e; border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; font-size: 13px; color: #cbd5e1; }
-        .userchip { font-size: 12px; color: var(--text-muted); margin-right: 8px; }
-        .link-logout { color: var(--text-muted); cursor: pointer; font-size: 12px; text-decoration: underline; }
-    </style>
+    :root {
+      --bg: #0e0f11;
+      --bg2: #16181c;
+      --bg3: #1e2126;
+      --border: rgba(255, 255, 255, .07);
+      --border2: rgba(255, 255, 255, .12);
+      --text: #f0f0ee;
+      --text2: #8a8e96;
+      --text3: #555960;
+      --crm: #1fd196;
+      --outros: #4b8ef5;
+      --site: #a078f0;
+      --app: #f07040;
+      --accent: #1fd196;
+      --radius: 10px;
+      --radius-lg: 14px;
+      --font: 'DM Sans', sans-serif;
+      --mono: 'DM Mono', monospace
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0 0 4rem
+    }
+
+    .header {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px
+    }
+
+    .logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+      font-size: 14px;
+      color: #0e0f11
+    }
+
+    .header-title {
+      font-size: 15px;
+      font-weight: 500
+    }
+
+    .header-sub {
+      font-size: 12px;
+      color: var(--text2);
+      margin-top: 1px
+    }
+
+    .status-badge {
+      font-size: 11px;
+      font-family: var(--mono);
+      background: rgba(31, 209, 150, .1);
+      color: var(--accent);
+      border: 1px solid rgba(31, 209, 150, .25);
+      border-radius: 20px;
+      padding: 4px 12px
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 2rem 0
+    }
+
+    .tab-bar {
+      display: flex;
+      gap: 10px;
+      margin: 1.5rem auto 0;
+      max-width: 1200px;
+      padding: 0 2rem;
+    }
+
+    .tab-btn {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      color: var(--text2);
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 10px 20px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .tab-btn:hover {
+      border-color: var(--border2);
+      color: var(--text);
+    }
+
+    .tab-btn.active {
+      background: rgba(31, 209, 150, 0.08);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: flex-end;
+      margin-bottom: 2rem;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.25rem
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px
+    }
+
+    .filter-group label {
+      font-size: 11px;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: .06em
+    }
+
+    .filters select,
+    .filters input {
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 13px;
+      padding: 7px 10px;
+      border-radius: 7px;
+      height: 36px;
+      outline: none;
+      cursor: pointer;
+      transition: border-color .15s
+    }
+
+    .filters select:hover,
+    .filters input:hover {
+      border-color: rgba(255, 255, 255, .25)
+    }
+
+    .filters select:focus,
+    .filters input:focus {
+      border-color: var(--accent)
+    }
+
+    .filter-sep {
+      width: 1px;
+      background: var(--border);
+      align-self: stretch;
+      margin: 0 4px
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-bottom: 1.5rem
+    }
+
+    .kpi {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.1rem 1.25rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .2s
+    }
+
+    .kpi:hover {
+      border-color: var(--border2)
+    }
+
+    .kpi::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--accent);
+      opacity: .6
+    }
+
+    .kpi-label {
+      font-size: 11px;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 8px
+    }
+
+    .kpi-value {
+      font-size: 24px;
+      font-weight: 300;
+      color: var(--text);
+      font-family: var(--mono);
+      letter-spacing: -1px
+    }
+
+    .kpi-sub {
+      font-size: 10px;
+      color: var(--text2);
+      margin-top: 4px;
+      font-family: var(--mono);
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin: 2rem 0 1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border)
+    }
+
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      margin-bottom: 12px
+    }
+
+    .card h3 {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      margin-bottom: 12px
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 10px;
+      font-size: 12px;
+      color: var(--text2)
+    }
+
+    .legend span {
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      flex-shrink: 0
+    }
+
+    .multi-select {
+      position: relative
+    }
+
+    .ms-btn {
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      color: var(--text);
+      padding: 7px 10px;
+      border-radius: 7px;
+      height: 36px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 220px;
+      font-size: 12px;
+      font-family: var(--font)
+    }
+
+    .ms-btn:hover {
+      border-color: var(--accent)
+    }
+
+    .ms-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 280px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-top: 5px;
+      max-height: 300px;
+      overflow-y: auto;
+      z-index: 200;
+      display: none;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
+      padding: 5px
+    }
+
+    .ms-dropdown.open {
+      display: block
+    }
+
+    .ms-item {
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      cursor: pointer;
+      border-radius: 4px
+    }
+
+    .ms-item:hover {
+      background: rgba(255, 255, 255, .05)
+    }
+
+    .ms-item input {
+      cursor: pointer;
+      accent-color: var(--accent)
+    }
+
+    .ms-summary {
+      font-size: 10px;
+      color: var(--text2);
+      display: block;
+      margin-top: 2px
+    }
+
+    .cmp-btn {
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      color: var(--text2);
+      font-family: var(--font);
+      font-size: 12px;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all .15s
+    }
+
+    .cmp-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(31, 209, 150, .08)
+    }
+
+    .data-table-container {
+      overflow-x: auto;
+      margin-top: 10px;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      text-align: left;
+    }
+
+    .data-table th {
+      color: var(--text2);
+      font-weight: 500;
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border2);
+    }
+
+    .data-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .data-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    .num-mono {
+      font-family: var(--mono);
+    }
+
+    .badge-pdv {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 500;
+    }
+    .badge-pdv.site {
+      background: rgba(160, 120, 240, 0.15);
+      color: #b395f3;
+    }
+    .badge-pdv.app {
+      background: rgba(240, 112, 64, 0.15);
+      color: #fca385;
+    }
+
+    .badge-type {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 500;
+    }
+    .badge-type.auto {
+      background: rgba(31, 209, 150, 0.15);
+      color: var(--crm);
+    }
+    .badge-type.manual {
+      background: rgba(75, 142, 245, 0.15);
+      color: #72a8ff;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 11px;
+      color: var(--text3);
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border)
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg)
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border2);
+      border-radius: 3px
+    }
+
+    @media(max-width:900px) {
+      .kpi-grid {
+        grid-template-columns: repeat(3, 1fr)
+      }
+
+      .grid-2 {
+        grid-template-columns: 1fr
+      }
+
+      .page {
+        padding: 1rem
+      }
+
+      .header {
+        padding: 1rem
+      }
+    }
+
+    @media(max-width:600px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+    }
+
+    .highlight-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 15px;
+      margin-bottom: 2rem;
+    }
+    .highlight-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+    .highlight-card:hover {
+      border-color: var(--border2);
+      transform: translateY(-2px);
+    }
+    .highlight-card-num {
+      font-size: 22px;
+      font-weight: 700;
+      font-family: var(--mono);
+      margin-bottom: 6px;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+    .highlight-card-title {
+      font-size: 11px;
+      font-weight: bold;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .highlight-card-desc {
+      font-size: 11.5px;
+      color: var(--text2);
+      line-height: 1.45;
+    }
+
+    @media(max-width:1024px) {
+      .highlight-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media(max-width:768px) {
+      .highlight-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media(max-width:480px) {
+      .highlight-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
+
 <body>
-    <div class="overlay" id="loginOverlay">
-        <div class="login-box">
-            <div class="glass-card">
-                <div class="logo" style="justify-content:center;margin-bottom:18px;"><div class="logo-icon">🚌</div><div>Agência CRM <span>Guanabara</span></div></div>
-                <div class="form-group"><label for="lg_user">Usuário</label><input type="text" id="lg_user" autocomplete="username" onkeydown="if(event.key==='Enter')fazerLogin()"></div>
-                <div class="form-group"><label for="lg_pass">Senha</label><input type="password" id="lg_pass" autocomplete="current-password" onkeydown="if(event.key==='Enter')fazerLogin()"></div>
-                <button class="btn-primary" onclick="fazerLogin()"><span>Entrar</span></button>
-                <div class="login-err" id="loginErr">Usuário ou senha inválidos.</div>
-            </div>
+  <header class="header">
+    <div class="header-left">
+      <div class="logo">GG</div>
+      <div>
+        <div class="header-title">Dashboard CRM — Análise CRM</div>
+        <div class="header-sub">Grupo Guanabara · Desempenho de CRM</div>
+      </div>
+    </div>
+    <span class="status-badge" id="status-txt">Carregando...</span>
+  </header>
+
+  <div class="tab-bar">
+    <a href="index.html" class="tab-btn">Visão Geral</a>
+    <a href="dashboard_crm.html" class="tab-btn active">Análise CRM</a>
+  </div>
+
+  <div class="page">
+
+    <!-- Filtros principais -->
+    <div class="filters">
+      <div class="filter-group"><label>Ponto de venda</label>
+        <select id="f-pdv">
+          <option value="">Todos</option>
+          <option value="Site">Site</option>
+          <option value="App">App</option>
+        </select>
+      </div>
+
+      <div class="filter-group"><label>Tipo de Disparo</label>
+        <select id="f-disparo">
+          <option value="">Todos</option>
+          <option value="auto">Automático (Architect)</option>
+          <option value="manual">Manual (Campanhas)</option>
+        </select>
+      </div>
+
+      <div class="filter-group"><label>Buscar Campanha</label>
+        <input type="text" id="f-campanha" placeholder="Digite o nome..." style="width:180px;" />
+      </div>
+
+      <div class="filter-sep"></div>
+
+      <div class="filter-group multi-select" id="fg-origens">
+        <label>Origens / Mídias CRM</label>
+        <div class="ms-btn" onclick="document.getElementById('ms-list').classList.toggle('open')">
+          <span id="ms-label">Nenhuma selecionada</span>
+          <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
+            <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
         </div>
-    </div>
-    <header>
-        <div class="logo"><div class="logo-icon">🚌</div><div>Agência CRM <span>Guanabara</span></div></div>
-        <nav class="nav-tabs">
-            <button class="tab-btn active" data-tab="tab-calendario" onclick="switchTab('tab-calendario')">📅 Calendário do Mês</button>
-            <button class="tab-btn" data-tab="tab-unitario" onclick="switchTab('tab-unitario')">🎯 Campanha Avulsa</button>
-            <button class="tab-btn" data-tab="tab-design" onclick="switchTab('tab-design')">🎨 Briefing Design</button>
-        </nav>
-        <span class="userchip" id="userChip"></span><span class="link-logout" id="logoutLink" onclick="logout()" style="display:none;margin-right:12px;">sair</span><div class="badge-status" id="statusBadge"><div style="width:8px;height:8px;background:currentColor;border-radius:50%;"></div><span id="statusTxt">Verificando servidor...</span></div>
-    </header>
+        <div class="ms-dropdown" id="ms-list"></div>
+      </div>
 
-    <div class="container">
-        <!-- LEFT -->
-        <aside>
-            <!-- CALENDÁRIO -->
-            <div id="config-calendario" class="panel-content active">
-                <div class="glass-card">
-                    <h2>💡 Briefing do mês</h2>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="cal_mes">Mês</label>
-                            <select id="cal_mes" onchange="previewGrade()">
-                                <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option>
-                                <option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option>
-                                <option value="7">Julho</option><option value="8" selected>Agosto</option><option value="9">Setembro</option>
-                                <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
-                            </select>
-                        </div>
-                        <div class="form-group"><label for="cal_ano">Ano</label><input type="number" id="cal_ano" value="2026" onchange="previewGrade()"></div>
-                    </div>
-                    <div class="form-group"><label for="cal_objetivo">Regras gerais do mês (opcional)</label>
-                        <textarea id="cal_objetivo" placeholder="Ex: Cupom IDAEVOLTA10 ativo o mês inteiro. Foco em antecipação."></textarea></div>
-                </div>
-
-                <div class="glass-card">
-                    <h2>🟢 Temas perenes <span style="font-size:11px;color:var(--text-muted);font-weight:600">(entram todo dia, rotacionando)</span></h2>
-                    <div class="chips" id="perenesChips"></div>
-                    <div class="add-inline">
-                        <input type="text" id="perNovo" placeholder="Adicionar tema perene..." onkeydown="if(event.key==='Enter'){addPerene();event.preventDefault();}">
-                        <button class="btn-ghost" style="margin:0" onclick="addPerene()">＋</button>
-                    </div>
-                    <div class="suggest" id="perSuggest"></div>
-                </div>
-
-                <div class="glass-card">
-                    <h2>🟣 Temas do mês <span style="font-size:11px;color:var(--text-muted);font-weight:600">(evento / avulso / recorrente)</span></h2>
-                    <p class="hint">Datas específicas (ex: Dia do Rock no dia 13) ou dias da semana (ex: Sextou). Entram na copy da campanha do mês.</p>
-                    <div class="form-group"><label for="e_nome">Nome</label>
-                        <input type="text" id="e_nome" placeholder="Ex: Jogo do Brasil, Sextou, Black Friday"></div>
-                    <div class="form-row">
-                        <div class="form-group"><label for="e_tipo">Quando</label>
-                            <select id="e_tipo" onchange="onEspTipo()">
-                                <option value="evento">Data(s) do mês</option>
-                                <option value="recorrente">Dia da semana</option>
-                            </select></div>
-                        <div class="form-group" id="grp_datas"><label for="e_datas">Dia(s)</label>
-                            <input type="text" id="e_datas" placeholder="5, 13, 25"></div>
-                        <div class="form-group" id="grp_dia" style="display:none;"><label for="e_dia">Dia</label>
-                            <select id="e_dia"><option value="segunda">Segunda</option><option value="terca">Terça</option><option value="quarta">Quarta</option><option value="quinta">Quinta</option><option value="sexta" selected>Sexta</option><option value="sabado">Sábado</option><option value="domingo">Domingo</option></select></div>
-                    </div>
-                    <div class="form-group"><label for="e_cobertura">Cobertura no dia</label>
-                        <select id="e_cobertura"><option value="parcial">Parcial (só os públicos marcados)</option><option value="dia_todo">Dia todo (assume os disparos)</option></select></div>
-                    <div class="form-group"><label>Públicos alvo (vazio = todos)</label>
-                        <div class="seg-tags" id="segTags">
-                            <div class="seg-tag" data-seg="Geral">Geral</div><div class="seg-tag" data-seg="Ativos">Ativos</div>
-                            <div class="seg-tag" data-seg="Frios">Frios</div><div class="seg-tag" data-seg="Em queda">Em queda</div>
-                            <div class="seg-tag" data-seg="Mobile">Mobile</div><div class="seg-tag" data-seg="Web">Web</div>
-                        </div></div>
-                    <div class="form-group"><label for="e_detalhes">Descrição para a copy</label>
-                        <textarea id="e_detalhes" placeholder="Ex: Antecipar passagens para o festival no Rio em setembro."></textarea></div>
-                    <button class="btn-ghost" onclick="addEsp()">➕ Adicionar tema do mês</button>
-                    <div id="espList" style="margin-top:6px;"></div>
-                </div>
-
-                <div class="glass-card">
-                    <h2>🚀 Gerar</h2>
-                    <button class="btn-primary" id="btnGerarCal" onclick="gerarCompleto()"><span>✨ Gerar copies + revisão (Gemini)</span></button>
-                    <p class="hint" style="margin-top:12px;">A prévia da grade é instantânea ao lado. Este botão chama o Gemini e o Revisor por combinação única, e precisa do servidor <code>py agencia_crm.py</code> ativo.</p>
-                </div>
-            </div>
-
-            <!-- UNITÁRIO -->
-            <div id="config-unitario" class="panel-content glass-card">
-                <h2>📝 Briefing da Campanha</h2>
-                <form id="briefingForm">
-                    <div class="form-group"><label for="campanha_id">ID da Campanha</label><input type="text" id="campanha_id" placeholder="Ex: 20260707_ferias_nordeste" required></div>
-                    <div class="form-group"><label for="tema">Tema Principal</label><input type="text" id="tema" placeholder="Ex: Férias de Julho" required></div>
-                    <div class="form-group"><label for="segmento">Segmento Recomendado</label>
-                        <select id="segmento" required><option value="20260127_Ativos_PushApp_Operacional">Ativos (App Push)</option><option value="20260127_BaseFria_PushApp_Operacional">Frios (App Push)</option><option value="20260127_EmQueda_PushApp_Operacional">Em queda (App Push)</option></select></div>
-                    <div class="form-group"><label for="canal">Canal Primário</label><select id="canal" required><option>App Push</option><option>Web Push</option><option>SMS</option><option>Email</option></select></div>
-                    <div class="form-group"><label for="data_hora">Agendamento (Data & Hora)</label><input type="text" id="data_hora" placeholder="Ex: 08/07/2026 14:00" required></div>
-                    <div class="form-group"><label for="detalhes">Instruções / Cupom / Contexto</label><textarea id="detalhes" placeholder="Ex: Cupom FERIAS10 dá 10% OFF." required></textarea></div>
-                    <button type="submit" class="btn-primary" id="btnSubmit"><span>🚀 Iniciar Criação</span></button>
-                </form>
-            </div>
-
-            <!-- DESIGN -->
-            <div id="config-design" class="panel-content glass-card">
-                <h2>🎨 Briefing para o Design</h2>
-                <p class="hint">Gera um briefing completo por canal para o time de criação executar as peças.</p>
-                <div class="form-group"><label for="d_tema">Campanha / Tema</label><input type="text" id="d_tema" placeholder="Ex: Antecipação Festas de fim de ano"></div>
-                <div class="form-group"><label for="d_objetivo">Objetivo</label><textarea id="d_objetivo" placeholder="Ex: Aumentar antecipação de compra e uso do cupom."></textarea></div>
-                <div class="form-group"><label for="d_publico">Público-alvo</label><input type="text" id="d_publico" placeholder="Ex: Clientes ativos e base fria"></div>
-                <div class="form-group"><label for="d_oferta">Oferta / Cupom</label><input type="text" id="d_oferta" placeholder="Ex: IDAEVOLTA10 (10% OFF ida e volta)"></div>
-                <div class="form-group"><label for="d_tom">Tom de voz</label><input type="text" id="d_tom" value="Guanabara: humanizado, caloroso, descontraído"></div>
-                <div class="form-group"><label for="d_obrig">Elementos obrigatórios</label><input type="text" id="d_obrig" placeholder="Ex: Logo Guanabara, selo do cupom, site"></div>
-                <div class="form-group"><label>Canais / peças</label>
-                    <div class="canal-tags" id="canalTags">
-                        <div class="canal-tag on" data-canal="WhatsApp">WhatsApp</div>
-                        <div class="canal-tag on" data-canal="Email">Email</div>
-                        <div class="canal-tag on" data-canal="App Push">App Push</div>
-                        <div class="canal-tag on" data-canal="Web Push">Web Push</div>
-                    </div>
-                </div>
-                <button class="btn-primary" id="btnDesign" onclick="gerarBriefingDesign()"><span>🎨 Gerar briefing de design</span></button>
-                <p class="hint" style="margin-top:12px;">Precisa do servidor ativo (usa o Gemini).</p>
-            </div>
-        </aside>
-
-        <!-- RIGHT -->
-        <main>
-            <!-- VIEW CALENDÁRIO -->
-            <div id="view-calendario" class="panel-content active">
-                <div class="virtual-console" id="calConsole" style="display:none;">[INFO] Console da Agência iniciado...</div>
-                <div class="output-viewer" id="outputViewerCal" style="display:block;">
-                    <div class="approval-banner">
-                        <div>
-                            <h3 id="calTitle">📅 Prévia do calendário</h3>
-                            <p id="calSubtitle">Atualiza sozinho conforme você edita os temas.</p>
-                            <div class="legend">
-                                <span><i class="dot" style="background:var(--primary)"></i> Perene</span>
-                                <span><i class="dot" style="background:var(--accent-purple)"></i> Evento/Avulso</span>
-                                <span><i class="dot" style="background:var(--accent-blue)"></i> Recorrente</span>
-                            </div>
-                        </div>
-                        <button class="btn-primary" id="btnSaveCal" style="width:auto;padding:12px 24px;" disabled>💾 Agendar tudo no Sheets</button>
-                    </div>
-                    <div id="combosCard" class="glass-card" style="display:none;">
-                        <h2>🛡️ Revisão por combinação</h2>
-                        <div id="combosGrid" class="checklist-grid" style="grid-template-columns:1fr;"></div>
-                    </div>
-                    <div class="glass-card" style="padding:20px;">
-                        <div class="filters">
-                            <select id="fltNatureza" onchange="renderCalendario()"><option value="">Todas as naturezas</option><option value="perene">Perene</option><option value="evento">Evento/Avulso</option><option value="recorrente">Recorrente</option></select>
-                            <select id="fltSegmento" onchange="renderCalendario()"><option value="">Todos os públicos</option><option>Geral</option><option>Ativos</option><option>Frios</option><option>Em queda</option><option>Mobile</option><option>Web</option></select>
-                            <select id="fltCanal" onchange="renderCalendario()"><option value="">Todos os canais</option><option>App Push</option><option>Web Push</option><option>SMS</option></select>
-                            <span class="kpi" id="calKpi"></span>
-                        </div>
-                        <div class="scheduler-table-container">
-                            <table><thead><tr><th>Hora</th><th>Canal</th><th>Público</th><th>Tema</th><th>Título</th><th>Mensagem</th><th>Revisão</th></tr></thead>
-                            <tbody id="calTableBody"></tbody></table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- VIEW UNITÁRIO -->
-            <div id="view-unitario" class="panel-content">
-                <div class="agents-progress" id="progressContainer">
-                    <div class="agent-pill" id="pill-planner"><div>🗺️</div><div>Planner</div><div id="status-planner">Aguardando...</div></div>
-                    <div class="agent-pill" id="pill-copywriter"><div>✍️</div><div>Copywriter</div><div id="status-copywriter">Aguardando...</div></div>
-                    <div class="agent-pill" id="pill-designer"><div>🎨</div><div>Designer</div><div id="status-designer">Aguardando...</div></div>
-                    <div class="agent-pill" id="pill-reviewer"><div>🛡️</div><div>Revisor</div><div id="status-reviewer">Aguardando...</div></div>
-                </div>
-                <div class="glass-card empty-state" id="emptyStateUnitario"><div class="empty-icon">🤖</div><h3>Agência Virtual pronta</h3><p>Preencha o briefing ao lado para os agentes trabalharem.</p></div>
-                <div class="output-viewer" id="outputViewerUnitario">
-                    <div class="approval-banner" id="approvalBanner">
-                        <div><h3 id="approvalTitle">Verificando...</h3><p id="approvalSubtitle">Análise em progresso.</p></div>
-                        <button class="btn-primary" id="btnSaveUnitario" style="width:auto;padding:12px 24px;" disabled>💾 Agendar no Sheets</button>
-                    </div>
-                    <div class="glass-card" style="border-color: rgba(16,185,129,0.2);">
-                        <h2>🛡️ Relatório da Revisão Severa</h2>
-                        <div class="checklist-grid">
-                            <div class="checklist-item"><span>Ortografia e Gramática</span><span class="checklist-badge" id="check-ortografia">Pendente</span></div>
-                            <div class="checklist-item"><span>Segmento Insider Seguro</span><span class="checklist-badge" id="check-insider">Pendente</span></div>
-                            <div class="checklist-item"><span>Regras de Futebol / Copa</span><span class="checklist-badge" id="check-futebol">Pendente</span></div>
-                            <div class="checklist-item"><span>Mescla & Saturação</span><span class="checklist-badge" id="check-mescla">Pendente</span></div>
-                        </div>
-                        <div id="critiquesContainer" style="display:none;background:rgba(239,68,68,0.05);padding:12px;margin-top:16px;border-radius:8px;font-size:13px;color:#fca5a5;"><strong>Críticas:</strong> <span id="critiquesText"></span></div>
-                        <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border-color);">
-                            <h4 style="color:var(--gold);margin-bottom:12px;">📝 Conteúdo Final</h4>
-                            <div class="form-group"><label for="final_title">Título</label><input type="text" id="final_title"></div>
-                            <div class="form-group"><label for="final_message">Texto</label><textarea id="final_message"></textarea></div>
-                        </div>
-                    </div>
-                    <div class="glass-card"><h2>🗺️ Planejamento Estratégico</h2><div id="plannerContent" style="padding:16px;font-size:14px;line-height:1.6;"></div></div>
-                </div>
-            </div>
-
-            <!-- VIEW DESIGN -->
-            <div id="view-design" class="panel-content">
-                <div class="glass-card empty-state" id="emptyStateDesign"><div class="empty-icon">🎨</div><h3>Briefing para o time de design</h3><p>Preencha o contexto ao lado e gere um briefing completo por canal (copy, formato, conceito visual, paleta e prompt de imagem).</p></div>
-                <div class="output-viewer" id="outputViewerDesign">
-                    <div class="approval-banner">
-                        <div><h3 id="designTitle">🎨 Briefing gerado</h3><p id="designSubtitle">Pronto para enviar ao time de criação.</p></div>
-                        <button class="btn-primary" id="btnDownloadDesign" style="width:auto;padding:12px 24px;" onclick="baixarBriefingDesign()">⬇️ Baixar (.md)</button>
-                    </div>
-                    <div id="pecasContainer"></div>
-                </div>
-            </div>
-        </main>
+      <div class="filter-group"><label>Data início</label><input type="date" id="f-inicio" /></div>
+      <div class="filter-group"><label>Data fim</label><input type="date" id="f-fim" /></div>
+      <button type="button" class="cmp-btn" onclick="resetFilters()" style="align-self: flex-end; height: 36px;">Redefinir Filtros</button>
     </div>
 
-    <script>
-        const API_BASE = "https://agencia-crm-guanabara.onrender.com/api";
-        let AUTH_TOKEN = localStorage.getItem('crm_token') || '';
-        let AUTH_REQUIRED = false;
-        const _fetch = window.fetch.bind(window);
-        window.fetch = (url, opts={}) => {
-            if (typeof url === 'string' && url.startsWith(API_BASE) && AUTH_TOKEN) {
-                opts.headers = Object.assign({}, opts.headers || {}, { 'Authorization': 'Bearer ' + AUTH_TOKEN });
+    <!-- KPIs CRM -->
+    <p class="section-title">KPIs Exclusivos CRM (Comparados com Total Geral)</p>
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi-label">Receita CRM</div>
+        <div class="kpi-value" id="k-crm-receita">—</div>
+        <div class="kpi-sub" id="s-crm-receita">—</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Sessões CRM</div>
+        <div class="kpi-value" id="k-crm-sessoes">—</div>
+        <div class="kpi-sub" id="s-crm-sessoes">—</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Transações CRM</div>
+        <div class="kpi-value" id="k-crm-transacoes">—</div>
+        <div class="kpi-sub" id="s-crm-transacoes">—</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Conversão CRM</div>
+        <div class="kpi-value" id="k-crm-conversao">—</div>
+        <div class="kpi-sub" style="opacity: 0;">—</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Ticket Médio CRM</div>
+        <div class="kpi-value" id="k-crm-ticket">—</div>
+        <div class="kpi-sub" style="opacity: 0;">—</div>
+      </div>
+    </div>
+
+    <!-- Divisão Automação vs Manual e Site vs App -->
+    <p class="section-title">Distribuição por Canal & Tipo de Disparo no CRM</p>
+    <div class="grid-2">
+      <!-- Site vs App -->
+      <div class="card">
+        <h3>Participação por Canal (Site vs App) no CRM</h3>
+        <div class="legend" id="leg-crm-pdv"></div>
+        <div style="position:relative;width:100%;height:180px"><canvas id="chart-crm-pdv-donut"></canvas></div>
+        <div style="margin-top:15px; display:grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div style="background:var(--bg3); padding:10px; border-radius:var(--radius); border:1px solid var(--border);">
+            <div style="font-size:10px; color:var(--text2); text-transform:uppercase;">Site (Web)</div>
+            <div style="font-size:15px; font-weight:bold; font-family:var(--mono); color:var(--site);" id="v-crm-site-rec">—</div>
+            <div style="font-size:10px; color:var(--text2); margin-top:2px;" id="v-crm-site-det">—</div>
+          </div>
+          <div style="background:var(--bg3); padding:10px; border-radius:var(--radius); border:1px solid var(--border);">
+            <div style="font-size:10px; color:var(--text2); text-transform:uppercase;">App (Mobile)</div>
+            <div style="font-size:15px; font-weight:bold; font-family:var(--mono); color:var(--app);" id="v-crm-app-rec">—</div>
+            <div style="font-size:10px; color:var(--text2); margin-top:2px;" id="v-crm-app-det">—</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Automático vs Manual -->
+      <div class="card">
+        <h3>Tipo de Disparo (Automático vs Manual) no CRM</h3>
+        <div class="legend" id="leg-crm-disparos"></div>
+        <div style="position:relative;width:100%;height:180px"><canvas id="chart-crm-disparos"></canvas></div>
+        <div style="margin-top:15px; display:grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div style="background:var(--bg3); padding:10px; border-radius:var(--radius); border:1px solid var(--border);">
+            <div style="font-size:10px; color:var(--text2); text-transform:uppercase;">Automático (Architect)</div>
+            <div style="font-size:15px; font-weight:bold; font-family:var(--mono); color:var(--crm);" id="v-crm-auto-rec">—</div>
+            <div style="font-size:10px; color:var(--text2); margin-top:2px;" id="v-crm-auto-det">—</div>
+          </div>
+          <div style="background:var(--bg3); padding:10px; border-radius:var(--radius); border:1px solid var(--border);">
+            <div style="font-size:10px; color:var(--text2); text-transform:uppercase;">Manual (Campanhas)</div>
+            <div style="font-size:15px; font-weight:bold; font-family:var(--mono); color:#4b8ef5;" id="v-crm-manual-rec">—</div>
+            <div style="font-size:10px; color:var(--text2); margin-top:2px;" id="v-crm-manual-det">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Origens de Sessão -->
+    <p class="section-title">Análise de Origens / Mídias de Tráfego de CRM</p>
+    <div class="card">
+      <h3>Ranking de Faturamento de Origens/Mídias de CRM</h3>
+      <div style="position:relative;width:100%;height:220px;margin-bottom:15px;"><canvas id="chart-crm-performance"></canvas></div>
+      <div class="data-table-container">
+        <table class="data-table" id="table-crm-origens">
+          <thead>
+            <tr>
+              <th>Origem / Mídia da Sessão</th>
+              <th class="text-right">Receita (R$)</th>
+              <th class="text-right">Share CRM (%)</th>
+              <th class="text-right">Sessões</th>
+              <th class="text-right">Transações</th>
+              <th class="text-right">Conversão (%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Populated dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Top Campanhas -->
+    <p class="section-title">Melhores Campanhas no Universo CRM</p>
+    <div class="card">
+      <h3>Top 15 Campanhas por Receita</h3>
+      <div class="data-table-container">
+        <table class="data-table" id="table-crm-campanhas">
+          <thead>
+            <tr>
+              <th>Campanha</th>
+              <th>PDV</th>
+              <th>Tipo</th>
+              <th class="text-right">Receita (R$)</th>
+              <th class="text-right">Share CRM (%)</th>
+              <th class="text-right">Sessões</th>
+              <th class="text-right">Transações</th>
+              <th class="text-right">Conversão (%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Populated dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Evolução -->
+    <p class="section-title">Evolução de Faturamento CRM</p>
+    <div class="card">
+      <h3>Evolução Diária da Receita de CRM (Automático vs Manual)</h3>
+      <div class="legend" id="leg-crm-evolucao"></div>
+      <div style="position:relative;width:100%;height:240px"><canvas id="chart-crm-evolucao"></canvas></div>
+    </div>
+
+    <!-- Highlights -->
+    <p class="section-title">Highlights & Insights do Período Mapeado</p>
+    <div id="crm-highlights-grid" class="highlight-grid">
+      <!-- Dynamic cards go here -->
+    </div>
+
+    <div class="footer">Atualizado automaticamente a partir do GA4 · Grupo Guanabara</div>
+  </div>
+
+  <script>
+    const CSV_URL = './dados_dashboard.csv';
+    const GRP_COLORS = { Direct: '#a078f0', 'Not Set': '#8a8e96', CRM: '#1fd196', Paid: '#f07040', Organic: '#f0a030', Referral: '#40f0d0', Blog: '#f040a0', Others: '#4b8ef5' };
+    const palette = ['#e05070', '#e0b040', '#40e0c0', '#9050e0', '#f06090', '#70c040', '#8090a0'];
+    const C = { crm: '#1fd196', outros: '#4b8ef5', site: '#a078f0', app: '#f07040', cmpA: '#1fd196', cmpB: '#f0a030' };
+    const GRID = 'rgba(255,255,255,0.06)', TICK = '#555960';
+    const TF = { size: 11, family: "'DM Mono',monospace" }, TFS = { size: 10, family: "'DM Mono',monospace" };
+    let rawData = [], charts = {}, maxDate = '';
+
+    function isCRM(canal) { return String(canal).toUpperCase() === 'CRM' }
+    function isAutomated(r) {
+      const txt = String(r.search_text || '').toLowerCase();
+      return txt.includes('architect') || txt.includes('architecht');
+    }
+
+    function norm(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '') }
+    function findKey(row, candidates) { const keys = Object.keys(row); for (const c of candidates) { const nc = norm(c); const k = keys.find(k => norm(k) === nc); if (k) return k; } return candidates[0] }
+    function fmt(v) { return Intl.NumberFormat('pt-BR').format(Math.round(v)) }
+    function fmtR(v) { return 'R$ ' + Intl.NumberFormat('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(Math.round(v)) }
+    function fmtC(v) { if (v >= 1e6) return 'R$ ' + Intl.NumberFormat('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(v / 1e6) + ' mi'; if (v >= 1e3) return 'R$ ' + Intl.NumberFormat('pt-BR').format(Math.round(v / 1e3)) + ' mil'; return fmtR(v) }
+    function parseNum(s) { if (!s && s !== 0) return 0; s = String(s).trim().replace(/\s/g, ''); if (s.includes('.') && s.includes(',')) { if (s.lastIndexOf(',') > s.lastIndexOf('.')) s = s.replace(/\./g, '').replace(',', '.'); else s = s.replace(/,/g, ''); } else if (s.includes(',') && !s.includes('.')) { s = s.replace(',', '.'); } return parseFloat(s) || 0 }
+    function parseDate(d) { if (!d) return null; const s = String(d).trim(); if (s.includes('/')) { const p = s.split('/'); if (p.length === 3) { if (p[2].length === 4) return `${p[2]}-${p[1].padStart(2, '0')}-${p[0].padStart(2, '0')}`; return `${p[0]}-${p[1].padStart(2, '0')}-${p[2].padStart(2, '0')}` } } if (/^\d{8}$/.test(s)) return `${s.slice(0, 4)}-${s.slice(4, 6)}-${s.slice(6, 8)}`; return s }
+    
+    function getFilteredBase(ini, fim, pdv) {
+      return rawData.filter(r => {
+        if (pdv && r.pdv !== pdv) return false;
+        if (ini && r.date < ini) return false;
+        if (fim && r.date > fim) return false;
+        return true;
+      });
+    }
+
+    function dc(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+    function leg(id, items) { const el = document.getElementById(id); if (!el) return; el.innerHTML = items.map(i => `<span><span class="legend-dot" style="background:${i.color}"></span>${i.label}</span>`).join('') }
+    function lineOpts(yFmt) { return { responsive: true, maintainAspectRatio: false, animation: false, plugins: { legend: { display: false }, datalabels: { display: false }, tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${yFmt ? yFmt(ctx.raw) : ctx.raw}` } } }, scales: { x: { ticks: { maxTicksLimit: 10, color: TICK, font: TF }, grid: { display: false } }, y: { min: 0, ticks: { callback: yFmt || (v => v), color: TICK, font: TF }, grid: { color: GRID } } } } }
+
+    function updateAll() {
+      Chart.register(ChartDataLabels);
+      
+      const pdv = document.getElementById('f-pdv').value;
+      const disparo = document.getElementById('f-disparo').value;
+      const campanhaBusca = document.getElementById('f-campanha').value.toLowerCase().trim();
+      const ini = document.getElementById('f-inicio').value;
+      const fim = document.getElementById('f-fim').value;
+
+      // 1. Get filtered base data for ALL channels (to calculate total global values for share %)
+      const dataBase = getFilteredBase(ini, fim, pdv);
+      const totalRec = dataBase.reduce((a, r) => a + r.receita, 0);
+      const totalSess = dataBase.reduce((a, r) => a + r.sessoes, 0);
+      const totalTrans = dataBase.reduce((a, r) => a + r.trans, 0);
+
+      // 2. Filter base data to CRM only
+      let crmBase = dataBase.filter(r => isCRM(r.canal));
+
+      // 3. Apply Tipo de Disparo filter
+      if (disparo === 'auto') {
+        crmBase = crmBase.filter(r => isAutomated(r));
+      } else if (disparo === 'manual') {
+        crmBase = crmBase.filter(r => !isAutomated(r));
+      }
+
+      // 4. Apply Busca de Campanha filter
+      if (campanhaBusca) {
+        crmBase = crmBase.filter(r => {
+          return String(r.campanha || '').toLowerCase().includes(campanhaBusca);
+        });
+      }
+
+      // 5. Apply multi-select Origens/Mídias filter
+      window.selectedOrigens = Array.from(document.querySelectorAll('#ms-list input:checked')).map(cb => cb.value);
+      const msLabel = document.getElementById('ms-label');
+      if (window.selectedOrigens.length === 0) {
+        msLabel.textContent = 'Nenhuma selecionada';
+      } else if (window.selectedOrigens.length === 1) {
+        msLabel.textContent = window.selectedOrigens[0].slice(0, 20) + '...';
+      } else {
+        msLabel.textContent = window.selectedOrigens.length + ' selecionadas';
+      }
+
+      let data = crmBase;
+      if (window.selectedOrigens.length > 0) {
+        const selSet = new Set(window.selectedOrigens);
+        data = crmBase.filter(r => selSet.has(r.midia));
+      }
+
+      // Calculate CRM KPIs
+      const crmRec = data.reduce((a, r) => a + r.receita, 0);
+      const crmSess = data.reduce((a, r) => a + r.sessoes, 0);
+      const crmTrans = data.reduce((a, r) => a + r.trans, 0);
+      const crmConv = crmSess > 0 ? (crmTrans / crmSess * 100) : 0;
+      const crmTicket = crmTrans > 0 ? (crmRec / crmTrans) : 0;
+      
+      const crmRecShare = totalRec > 0 ? (crmRec / totalRec * 100) : 0;
+      const crmSessShare = totalSess > 0 ? (crmSess / totalSess * 100) : 0;
+      const crmTransShare = totalTrans > 0 ? (crmTrans / totalTrans * 100) : 0;
+
+      // Update CRM KPIs
+      document.getElementById('k-crm-receita').innerHTML = fmtR(crmRec);
+      document.getElementById('s-crm-receita').innerHTML = `${crmRecShare.toFixed(2)}% do faturamento total`;
+      document.getElementById('k-crm-sessoes').innerHTML = fmt(crmSess);
+      document.getElementById('s-crm-sessoes').innerHTML = `${crmSessShare.toFixed(2)}% do tráfego total`;
+      document.getElementById('k-crm-transacoes').innerHTML = fmt(crmTrans);
+      document.getElementById('s-crm-transacoes').innerHTML = `${crmTransShare.toFixed(2)}% das transações totais`;
+      document.getElementById('k-crm-conversao').innerHTML = crmConv > 0 ? crmConv.toFixed(2) + '%' : '—';
+      document.getElementById('k-crm-ticket').innerHTML = crmTicket > 0 ? fmtR(crmTicket) : '—';
+
+      // --- Site vs App in CRM ---
+      const siteCrmData = data.filter(r => r.pdv === 'Site');
+      const appCrmData = data.filter(r => r.pdv === 'App');
+      
+      const siteCrmRec = siteCrmData.reduce((a, r) => a + r.receita, 0);
+      const siteCrmSess = siteCrmData.reduce((a, r) => a + r.sessoes, 0);
+      const siteCrmTrans = siteCrmData.reduce((a, r) => a + r.trans, 0);
+      const siteCrmConv = siteCrmSess > 0 ? (siteCrmTrans / siteCrmSess * 100) : 0;
+      const siteCrmPct = crmRec > 0 ? (siteCrmRec / crmRec * 100) : 0;
+      
+      const appCrmRec = appCrmData.reduce((a, r) => a + r.receita, 0);
+      const appCrmSess = appCrmData.reduce((a, r) => a + r.sessoes, 0);
+      const appCrmTrans = appCrmData.reduce((a, r) => a + r.trans, 0);
+      const appCrmConv = appCrmSess > 0 ? (appCrmTrans / appCrmSess * 100) : 0;
+      const appCrmPct = crmRec > 0 ? (appCrmRec / crmRec * 100) : 0;
+
+      document.getElementById('v-crm-site-rec').textContent = fmtR(siteCrmRec);
+      document.getElementById('v-crm-site-det').textContent = `${siteCrmPct.toFixed(1)}% do CRM · Conv: ${siteCrmConv.toFixed(2)}%`;
+      document.getElementById('v-crm-app-rec').textContent = fmtR(appCrmRec);
+      document.getElementById('v-crm-app-det').textContent = `${appCrmPct.toFixed(1)}% do CRM · Conv: ${appCrmConv.toFixed(2)}%`;
+
+      dc('crm-pdv-donut');
+      leg('leg-crm-pdv', [{ color: C.site, label: 'Site' }, { color: C.app, label: 'App' }]);
+      charts['crm-pdv-donut'] = new Chart(document.getElementById('chart-crm-pdv-donut'), {
+        type: 'doughnut',
+        data: { labels: ['Site', 'App'], datasets: [{ data: [siteCrmRec, appCrmRec], backgroundColor: [C.site, C.app], borderWidth: 0 }] },
+        options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { display: false }, datalabels: { color: '#fff', font: TFS, formatter: (v, ctx) => { let sum = ctx.dataset.data.reduce((a,b)=>a+b,0); return sum>0 ? (v/sum*100).toFixed(1)+'%' : ''; } } } }
+      });
+
+      // --- Automático vs Manual in CRM ---
+      const autoData = data.filter(r => isAutomated(r));
+      const manualData = data.filter(r => !isAutomated(r));
+      
+      const autoRec = autoData.reduce((a, r) => a + r.receita, 0);
+      const autoSess = autoData.reduce((a, r) => a + r.sessoes, 0);
+      const autoTrans = autoData.reduce((a, r) => a + r.trans, 0);
+      const autoConv = autoSess > 0 ? (autoTrans / autoSess * 100) : 0;
+      const autoPct = crmRec > 0 ? (autoRec / crmRec * 100) : 0;
+      
+      const manualRec = manualData.reduce((a, r) => a + r.receita, 0);
+      const manualSess = manualData.reduce((a, r) => a + r.sessoes, 0);
+      const manualTrans = manualData.reduce((a, r) => a + r.trans, 0);
+      const manualConv = manualSess > 0 ? (manualTrans / manualSess * 100) : 0;
+      const manualPct = crmRec > 0 ? (manualRec / crmRec * 100) : 0;
+
+      document.getElementById('v-crm-auto-rec').textContent = fmtR(autoRec);
+      document.getElementById('v-crm-auto-det').textContent = `${autoPct.toFixed(1)}% do CRM · Conv: ${autoConv.toFixed(2)}%`;
+      document.getElementById('v-crm-manual-rec').textContent = fmtR(manualRec);
+      document.getElementById('v-crm-manual-det').textContent = `${manualPct.toFixed(1)}% do CRM · Conv: ${manualConv.toFixed(2)}%`;
+
+      dc('crm-disparos');
+      leg('leg-crm-disparos', [{ color: C.crm, label: 'Automático' }, { color: '#4b8ef5', label: 'Manual' }]);
+      charts['crm-disparos'] = new Chart(document.getElementById('chart-crm-disparos'), {
+        type: 'doughnut',
+        data: { labels: ['Automático', 'Manual'], datasets: [{ data: [autoRec, manualRec], backgroundColor: [C.crm, '#4b8ef5'], borderWidth: 0 }] },
+        options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { display: false }, datalabels: { color: '#fff', font: TFS, formatter: (v, ctx) => { let sum = ctx.dataset.data.reduce((a,b)=>a+b,0); return sum>0 ? (v/sum*100).toFixed(1)+'%' : ''; } } } }
+      });
+
+      // --- Origens de Sessão CRM ---
+      const midiaRecMap = {}, midiaSessMap = {}, midiaTransMap = {};
+      data.forEach(r => {
+        if (r.midia) {
+          midiaRecMap[r.midia] = (midiaRecMap[r.midia] || 0) + r.receita;
+          midiaSessMap[r.midia] = (midiaSessMap[r.midia] || 0) + r.sessoes;
+          midiaTransMap[r.midia] = (midiaTransMap[r.midia] || 0) + r.trans;
+        }
+      });
+
+      const sortedMidias = Object.keys(midiaRecMap).sort((a, b) => midiaRecMap[b] - midiaRecMap[a]);
+      const topCrmMidias = sortedMidias.slice(0, 8);
+      const topCrmMidiasData = topCrmMidias.map(m => midiaRecMap[m]);
+
+      dc('crm-performance');
+      charts['crm-performance'] = new Chart(document.getElementById('chart-crm-performance'), {
+        type: 'bar',
+        data: {
+          labels: topCrmMidias,
+          datasets: [{
+            data: topCrmMidiasData,
+            backgroundColor: topCrmMidias.map((_, i) => palette[i % palette.length]),
+            borderRadius: 4
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+          plugins: {
+            legend: { display: false },
+            datalabels: {
+              color: '#f0f0ee', font: TFS,
+              formatter: v => {
+                const pct = crmRec > 0 ? (v / crmRec * 100).toFixed(1) : 0;
+                return v > 0 ? `${fmtC(v)} (${pct}%)` : '';
+              },
+              anchor: 'end', align: 'right'
             }
-            return _fetch(url, opts);
-        };
-
-        // ===================== MOTOR DE GRADE (client-side, espelha o Python) =====================
-        const GRADE_DIARIA = [
-            {hora:"09:00",canal:"App Push",plataforma:"Firebase",segmento:"Geral",   papel:"institucional",dias_uteis:false},
-            {hora:"10:00",canal:"Web Push",plataforma:"Pushnews",segmento:"Geral",   papel:"campanha",     dias_uteis:false},
-            {hora:"11:00",canal:"App Push",plataforma:"Insider", segmento:"Ativos",  papel:"fidelidade",   dias_uteis:false},
-            {hora:"11:00",canal:"App Push",plataforma:"Insider", segmento:"Frios",   papel:"urgencia",     dias_uteis:false},
-            {hora:"11:00",canal:"App Push",plataforma:"Insider", segmento:"Em queda",papel:"campanha",     dias_uteis:false},
-            {hora:"14:00",canal:"Web Push",plataforma:"Insider", segmento:"Mobile",  papel:"campanha",     dias_uteis:true},
-            {hora:"14:00",canal:"Web Push",plataforma:"Insider", segmento:"Web",     papel:"campanha",     dias_uteis:true},
-            {hora:"15:00",canal:"SMS",     plataforma:"Insider", segmento:"Ativos",  papel:"campanha",     dias_uteis:true},
-            {hora:"16:00",canal:"App Push",plataforma:"Insider", segmento:"Ativos",  papel:"campanha",     dias_uteis:false},
-            {hora:"16:00",canal:"App Push",plataforma:"Insider", segmento:"Frios",   papel:"fidelidade",   dias_uteis:false},
-            {hora:"16:00",canal:"App Push",plataforma:"Insider", segmento:"Em queda",papel:"reativacao",   dias_uteis:false},
-            {hora:"18:00",canal:"App Push",plataforma:"Insider", segmento:"Ativos",  papel:"fidelidade",   dias_uteis:false},
-            {hora:"20:00",canal:"App Push",plataforma:"Insider", segmento:"Frios",   papel:"cupom",        dias_uteis:false},
-            {hora:"20:00",canal:"App Push",plataforma:"Insider", segmento:"Em queda",papel:"fidelidade",   dias_uteis:false},
-        ];
-        const DETALHES_POR_PAPEL = {
-            institucional:"Tom institucional/comercial: formas de pagamento (Pix, cartão 12x), praticidade e confiança.",
-            campanha:"Campanha comercial: cupom IDAEVOLTA10 com 10% OFF na ida e volta.",
-            fidelidade:"Programa Viva Fidelidade: consulta de pontos e resgate de passagem grátis.",
-            urgencia:"Urgência para base fria: preço sobe, poucas vagas, antecipe agora.",
-            reativacao:"Reativação de base em queda: saudade, novidades e condições atualizadas.",
-            cupom:"Cupom para base fria: IDAEVOLTA10 ativo, conversão direta."
-        };
-        const AFINIDADE = {
-            institucional:["comercial","institucional","pagamento"],
-            campanha:["campanha","viaje","cupom","desconto","antecip","rotina"],
-            fidelidade:["fidelidade","viva","resgate","pontos"],
-            urgencia:["urg","antecip"],
-            reativacao:["reativ","saudade"],
-            cupom:["cupom","desconto","campanha"]
-        };
-        const DIAS_SEMANA = {segunda:1,terca:2,"terça":2,quarta:3,quinta:4,sexta:5,sabado:6,"sábado":6,domingo:0};
-        function segInsider(seg, ref){
-            const m={Ativos:ref+"_Ativos_PushApp_Operacional",Frios:ref+"_BaseFria_PushApp_Operacional","Em queda":ref+"_EmQueda_PushApp_Operacional",Mobile:"Mobile",Web:"Web",Geral:"Geral"};
-            return m[seg]||seg;
+          },
+          scales: { x: { display: false, min: 0 }, y: { ticks: { color: TICK, font: TFS }, grid: { display: false } } }
         }
-        function perenesPorPapel(perenes, papel){
-            const ch=AFINIDADE[papel]||[];
-            const casados=perenes.filter(t=>ch.some(k=>t.nome.toLowerCase().includes(k)));
-            return casados.length?casados:perenes;
-        }
-        function aplicaNoSlot(tema,slot){ const a=tema.segmentos_alvo||[]; return a.length===0 || a.includes(slot.segmento); }
-        function campanhaId(it){ return `2026_${it.canal.toLowerCase().replace(/ /g,'')}_${it.tema.toLowerCase().replace(/ /g,'_')}_${it.segmento.toLowerCase().replace(/ /g,'')}_${it.data.replace(/\//g,'')}`; }
+      });
 
-        function montarGrade(mes, ano){
-            const perenes = state.perenes.length ? state.perenes : [{nome:"Campanha",detalhes:""}];
-            const eventos = state.especiais.filter(e=>e.tipo==='evento');
-            const recorrentes = state.especiais.filter(e=>e.tipo==='recorrente');
-            const evPorDia={}; eventos.forEach(ev=>ev.datas.forEach(d=>{const n=parseInt(String(d).split('/')[0]); if(n){(evPorDia[n]=evPorDia[n]||[]).push(ev);}}));
-            const rcPorWd={}; recorrentes.forEach(rc=>{const wd=DIAS_SEMANA[(rc.dia_semana||'').toLowerCase()]; if(wd!==undefined){(rcPorWd[wd]=rcPorWd[wd]||[]).push(rc);}});
-            const numDias=new Date(ano,mes,0).getDate();
-            const historico={}, idx={}, grade=[];
-            for(let dia=1;dia<=numDias;dia++){
-                const wd=new Date(ano,mes-1,dia).getDay(); // 0=domingo
-                const especiais=(evPorDia[dia]||[]).concat(rcPorWd[wd]||[]);
-                for(const slot of GRADE_DIARIA){
-                    if(slot.dias_uteis && (wd===0||wd===6)) continue;
-                    let tema=null, natureza="perene", obj=null;
-                    for(const esp of especiais){ if(aplicaNoSlot(esp,slot)){ tema=esp.nome; natureza=esp.tipo; obj=esp; break; } }
-                    if(!tema){
-                        const key=slot.hora+"|"+slot.canal+"|"+slot.segmento;
-                        const ultimo=historico[key];
-                        const cand=perenesPorPapel(perenes,slot.papel);
-                        let disp=cand.filter(t=>t.nome!==ultimo); if(!disp.length) disp=cand;
-                        const i=(idx[key]||0)%disp.length; obj=disp[i]; idx[key]=i+1;
-                        tema=obj.nome; historico[key]=tema;
-                    }
-                    const data=`${String(dia).padStart(2,'0')}/${String(mes).padStart(2,'0')}`;
-                    const ref=`${ano}${String(mes).padStart(2,'0')}${String(dia).padStart(2,'0')}`;
-                    const it={dia,data,data_hora:`${data} ${slot.hora}`,hora:slot.hora,canal:slot.canal,plataforma:slot.plataforma,
-                        segmento:slot.segmento,segmento_insider:segInsider(slot.segmento,ref),papel:slot.papel,tema,natureza,
-                        detalhes:(obj&&obj.detalhes)||DETALHES_POR_PAPEL[slot.papel]||"",titulo:"",texto:"",status_revisao:"PRÉVIA",imagem:"",link:""};
-                    it.campanha_id=campanhaId(it);
-                    grade.push(it);
-                }
+      // Populate Origens Table
+      const origensTbody = document.querySelector('#table-crm-origens tbody');
+      if (origensTbody) {
+        if (sortedMidias.length === 0) {
+          origensTbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text3); padding:20px;">Nenhum dado encontrado</td></tr>';
+        } else {
+          origensTbody.innerHTML = sortedMidias.map(m => {
+            const r = midiaRecMap[m];
+            const pct = crmRec > 0 ? (r / crmRec * 100).toFixed(1) + '%' : '0.0%';
+            const s = midiaSessMap[m];
+            const t = midiaTransMap[m];
+            const conv = s > 0 ? (t / s * 100).toFixed(2) + '%' : '—';
+            return `
+              <tr>
+                <td style="font-weight: 500;">${m}</td>
+                <td class="text-right num-mono">${fmt(r)}</td>
+                <td class="text-right num-mono">${pct}</td>
+                <td class="text-right num-mono">${fmt(s)}</td>
+                <td class="text-right num-mono">${fmt(t)}</td>
+                <td class="text-right num-mono">${conv}</td>
+              </tr>
+            `;
+          }).join('');
+        }
+      }
+
+      // --- Top 15 Campanhas Table ---
+      const campMap = {};
+      data.forEach(r => {
+        if (r.campanha && r.campanha !== '(not set)') {
+          const key = r.campanha + '||' + r.pdv + '||' + (isAutomated(r) ? 'auto' : 'manual');
+          if (!campMap[key]) {
+            campMap[key] = { receita: 0, sessoes: 0, trans: 0 };
+          }
+          campMap[key].receita += r.receita;
+          campMap[key].sessoes += r.sessoes;
+          campMap[key].trans += r.trans;
+        }
+      });
+
+      const sortedCampKeys = Object.keys(campMap).sort((a, b) => campMap[b].receita - campMap[a].receita).slice(0, 15);
+      const campanhasTbody = document.querySelector('#table-crm-campanhas tbody');
+      if (campanhasTbody) {
+        if (sortedCampKeys.length === 0) {
+          campanhasTbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:var(--text3); padding:20px;">Nenhuma campanha com dados encontrada</td></tr>';
+        } else {
+          campanhasTbody.innerHTML = sortedCampKeys.map(k => {
+            const [campName, pdvName, typeName] = k.split('||');
+            const metrics = campMap[k];
+            const share = crmRec > 0 ? (metrics.receita / crmRec * 100).toFixed(1) + '%' : '0.0%';
+            const conv = metrics.sessoes > 0 ? (metrics.trans / metrics.sessoes * 100).toFixed(2) + '%' : '—';
+            return `
+              <tr>
+                <td style="font-weight: 500; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${campName}">${campName}</td>
+                <td><span class="badge-pdv ${pdvName.toLowerCase()}">${pdvName}</span></td>
+                <td><span class="badge-type ${typeName}">${typeName === 'auto' ? 'Automático' : 'Manual'}</span></td>
+                <td class="text-right num-mono">${fmt(metrics.receita)}</td>
+                <td class="text-right num-mono">${share}</td>
+                <td class="text-right num-mono">${fmt(metrics.sessoes)}</td>
+                <td class="text-right num-mono">${fmt(metrics.trans)}</td>
+                <td class="text-right num-mono">${conv}</td>
+              </tr>
+            `;
+          }).join('');
+        }
+      }
+
+      // --- Evolução Diária da Receita de CRM Chart ---
+      const crmDatesMap = {};
+      data.forEach(r => {
+        if (!crmDatesMap[r.date]) crmDatesMap[r.date] = { auto: 0, manual: 0 };
+        const isAuto = isAutomated(r);
+        if (isAuto) crmDatesMap[r.date].auto += r.receita;
+        else crmDatesMap[r.date].manual += r.receita;
+      });
+      const crmDates = Object.keys(crmDatesMap).sort();
+      const autoEvol = crmDates.map(d => Math.round(crmDatesMap[d].auto));
+      const manualEvol = crmDates.map(d => Math.round(crmDatesMap[d].manual));
+
+      dc('crm-evolucao');
+      leg('leg-crm-evolucao', [{color: C.crm, label: 'Automático (Architect)'}, {color: '#4b8ef5', label: 'Manual (Campanhas)'}]);
+      charts['crm-evolucao'] = new Chart(document.getElementById('chart-crm-evolucao'), {
+        type: 'line',
+        data: {
+          labels: crmDates,
+          datasets: [
+            { label: 'Automático', data: autoEvol, borderColor: C.crm, backgroundColor: 'transparent', tension: 0.3, pointRadius: 3, borderWidth: 2 },
+            { label: 'Manual', data: manualEvol, borderColor: '#4b8ef5', backgroundColor: 'transparent', tension: 0.3, pointRadius: 3, borderWidth: 2 }
+          ]
+        },
+        options: lineOpts(v => fmtC(v))
+      });
+
+      // Highlights
+      let bestDay = '—', bestDayRec = 0;
+      crmDates.forEach(d => {
+        const rec = crmDatesMap[d].auto + crmDatesMap[d].manual;
+        if (rec > bestDayRec) {
+          bestDayRec = rec;
+          bestDay = d;
+        }
+      });
+
+      const hGrid = document.getElementById('crm-highlights-grid');
+      if (hGrid) {
+        const bestDayFmt = bestDay !== '—' ? bestDay.split('-').reverse().join('/') : '—';
+        const topMidia = sortedMidias[0] || '—';
+        const topMidiaRec = midiaRecMap[topMidia] || 0;
+        const topMidiaPct = crmRec > 0 ? (topMidiaRec / crmRec * 100).toFixed(1) : 0;
+        
+        let html = `
+          <div class="highlight-card" style="border-left: 3px solid var(--accent);">
+            <div class="highlight-card-title">🎯 Receita Total</div>
+            <div class="highlight-card-num" style="color: var(--accent);">${fmtR(crmRec)}</div>
+            <div class="highlight-card-desc">Equivale a <strong>${crmRecShare.toFixed(2)}%</strong> do faturamento global (R$ ${fmtC(totalRec)}) captado nas plataformas.</div>
+          </div>
+          <div class="highlight-card" style="border-left: 3px solid var(--site);">
+            <div class="highlight-card-title">⚡ Origem Campeã</div>
+            <div class="highlight-card-num" style="color: var(--site);">${fmtR(topMidiaRec)}</div>
+            <div class="highlight-card-desc">Gerado pela mídia <strong>${topMidia}</strong>, correspondendo a <strong>${topMidiaPct}%</strong> do total CRM.</div>
+          </div>
+          <div class="highlight-card" style="border-left: 3px solid var(--crm);">
+            <div class="highlight-card-title">🤖 Jornadas (Auto)</div>
+            <div class="highlight-card-num" style="color: var(--crm);">${autoPct.toFixed(1)}%</div>
+            <div class="highlight-card-desc">Disparos automáticos somaram <strong>${fmtR(autoRec)}</strong> com conversão de <strong>${autoConv.toFixed(2)}%</strong>.</div>
+          </div>
+          <div class="highlight-card" style="border-left: 3px solid var(--app);">
+            <div class="highlight-card-title">📱 Share App (CRM)</div>
+            <div class="highlight-card-num" style="color: var(--app);">${appCrmPct.toFixed(1)}%</div>
+            <div class="highlight-card-desc">Participação do <strong>App</strong> (<strong>${fmtR(appCrmRec)}</strong>). Vendas via <strong>Site</strong> respondem por <strong>${siteCrmPct.toFixed(1)}%</strong> (<strong>${fmtR(siteCrmRec)}</strong>).</div>
+          </div>
+          <div class="highlight-card" style="border-left: 3px solid var(--outros);">
+            <div class="highlight-card-title">📅 Melhor Dia</div>
+            <div class="highlight-card-num" style="color: var(--outros);">${fmtR(bestDayRec)}</div>
+            <div class="highlight-card-desc">Pico de faturamento de CRM atingido no dia <strong>${bestDayFmt}</strong>.</div>
+          </div>
+        `;
+        hGrid.innerHTML = html;
+      }
+    }
+
+    function resetFilters(initialLoad = false) {
+      document.getElementById('f-pdv').value = '';
+      document.getElementById('f-disparo').value = '';
+      document.getElementById('f-campanha').value = '';
+      
+      let defaultDateStr = '';
+      if (maxDate) {
+        defaultDateStr = maxDate;
+      } else {
+        const today = new Date();
+        const fmt = d => {
+          const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0'), da = String(d.getDate()).padStart(2,'0');
+          return `${y}-${m}-${da}`;
+        };
+        defaultDateStr = fmt(today);
+      }
+      
+      document.getElementById('f-inicio').value = defaultDateStr;
+      document.getElementById('f-fim').value = defaultDateStr;
+      
+      document.querySelectorAll('#ms-list input').forEach(cb => {
+        cb.checked = false;
+      });
+      
+      if (!initialLoad) {
+        updateAll();
+      }
+    }
+
+    // Event listeners
+    ['f-pdv', 'f-disparo'].forEach(id => {
+      document.getElementById(id).addEventListener('change', updateAll);
+    });
+    
+    document.getElementById('f-campanha').addEventListener('input', updateAll);
+
+    ['f-inicio', 'f-fim'].forEach(id => {
+      document.getElementById(id).addEventListener('change', updateAll);
+    });
+
+    // Load CSV Data
+    function loadData() {
+      document.getElementById('status-txt').textContent = 'Carregando...';
+      Papa.parse(CSV_URL, {
+        download: true, header: true, skipEmptyLines: true,
+        complete: function (res) {
+          const sample = res.data[0] || {};
+          const K = {
+            pdv: findKey(sample, ['Ponto de Venda', 'Ponto de venda']),
+            date: findKey(sample, ['Data Ajustada', 'Data ajustada', 'Data']),
+            canal: findKey(sample, ['Origem Agrupada', 'Origem agrupada']),
+            origem: findKey(sample, ['Origem Resumida', 'Origem resumida']),
+            campanha: findKey(sample, ['Campanha da sessão', 'Campanha', 'Campaign']),
+            midia: findKey(sample, ['Origem / mídia da sessão', 'Origem / midia', 'Source / Medium']),
+            sessoes: findKey(sample, ['Sessões', 'Sessões', 'Sessoes', 'Sessions']),
+            trans: findKey(sample, ['Transações', 'Transacoes', 'Transações']),
+            receita: findKey(sample, ['Receita', 'receita'])
+          };
+          
+          rawData = res.data.map(r => ({
+            pdv: String(r[K.pdv] || '').trim(),
+            date: parseDate(r[K.date]),
+            canal: String(r[K.canal] || 'Others').trim(),
+            origem: String(r[K.origem] || '').trim(),
+            midia: String(r[K.midia] || '').trim(),
+            campanha: String(r[K.campanha] || '').trim(),
+            search_text: `${r[K.origem] || ''} ${r[K.campanha] || ''} ${r[K.midia] || ''}`.toLowerCase(),
+            sessoes: parseNum(r[K.sessoes]),
+            trans: parseNum(r[K.trans]),
+            receita: parseNum(r[K.receita])
+          })).filter(r => r.date && r.date.length >= 8);
+          
+          const ultimo = rawData.map(r => r.date).sort().reverse()[0] || '';
+          maxDate = ultimo;
+          document.getElementById('status-txt').textContent = fmt(rawData.length) + ' linhas · último: ' + (ultimo || '—');
+
+          // Fallback if today's date has no data yet
+          const currentVal = document.getElementById('f-inicio').value;
+          const hasData = rawData.some(r => r.date === currentVal);
+          if (!hasData && maxDate) {
+            document.getElementById('f-inicio').value = maxDate;
+            document.getElementById('f-fim').value = maxDate;
+          }
+
+          // Populate CRM media sources dropdown
+          const crmRows = rawData.filter(r => isCRM(r.canal));
+          const crmMidiasMap = {};
+          crmRows.forEach(r => {
+            if (r.midia) {
+              crmMidiasMap[r.midia] = (crmMidiasMap[r.midia] || 0) + r.receita;
             }
-            return grade;
-        }
+          });
+          const crmMidiasValidas = Object.keys(crmMidiasMap).sort((a, b) => crmMidiasMap[b] - crmMidiasMap[a]);
 
-        // ===================== ESTADO =====================
-        const PERENES_PADRAO = [
-            {nome:"Campanha",detalhes:"Cupom IDAEVOLTA10 com 10% OFF na ida e volta."},
-            {nome:"Viva Fidelidade",detalhes:"Consulta de pontos e resgate de passagem grátis."},
-            {nome:"Comercial",detalhes:"Formas de pagamento: Pix, cartão 12x, conforto e frota."},
-            {nome:"Antecipação",detalhes:"Antecipe a compra e pague menos, garanta a poltrona."},
-            {nome:"Reativação",detalhes:"Base em queda: saudade e condições atualizadas."},
-            {nome:"Cupom",detalhes:"Cupom IDAEVOLTA10 ativo para a base fria."},
-            {nome:"Urgência",detalhes:"Preço sobe, poucas vagas, decida agora."}
-        ];
-        const PERENES_SUGERIDOS = ["Conforto e Frota","Destinos","Rotina","Institucional","Pontualidade","Bagagem","Pet a bordo","Wi-Fi a bordo"];
-        const state = { perenes: JSON.parse(JSON.stringify(PERENES_PADRAO)), especiais: [], resultado: null };
-
-        // ===================== PERENES UI =====================
-        function renderPerenes(){
-            document.getElementById('perenesChips').innerHTML = state.perenes.map((p,i)=>
-                `<span class="chip perene">${p.nome}<span class="x" onclick="rmPerene(${i})">✕</span></span>`).join('') || '<span class="hint">Nenhum perene. Adicione abaixo.</span>';
-            const usados = state.perenes.map(p=>p.nome.toLowerCase());
-            document.getElementById('perSuggest').innerHTML = PERENES_SUGERIDOS.filter(s=>!usados.includes(s.toLowerCase()))
-                .map(s=>`<span class="s" onclick="addPereneNome('${s.replace(/'/g,"\\'")}')">＋ ${s}</span>`).join('');
-        }
-        function addPerene(){ const v=document.getElementById('perNovo').value.trim(); if(v){addPereneNome(v);} document.getElementById('perNovo').value=''; }
-        function addPereneNome(nome){ if(!state.perenes.some(p=>p.nome.toLowerCase()===nome.toLowerCase())){ state.perenes.push({nome,detalhes:""}); renderPerenes(); previewGrade(); } }
-        function rmPerene(i){ state.perenes.splice(i,1); renderPerenes(); previewGrade(); }
-
-        // ===================== ESPECIAIS UI =====================
-        function onEspTipo(){ const t=document.getElementById('e_tipo').value; document.getElementById('grp_datas').style.display=t==='evento'?'block':'none'; document.getElementById('grp_dia').style.display=t==='recorrente'?'block':'none'; }
-        document.querySelectorAll('.seg-tag').forEach(el=>el.addEventListener('click',()=>el.classList.toggle('on')));
-        function addEsp(){
-            const nome=document.getElementById('e_nome').value.trim(); if(!nome){alert('Informe o nome do tema.');return;}
-            const tipo=document.getElementById('e_tipo').value;
-            const esp={nome,tipo,
-                datas: tipo==='evento'?document.getElementById('e_datas').value.split(',').map(s=>s.trim()).filter(Boolean):[],
-                dia_semana: tipo==='recorrente'?document.getElementById('e_dia').value:'',
-                cobertura: document.getElementById('e_cobertura').value,
-                segmentos_alvo: Array.from(document.querySelectorAll('.seg-tag.on')).map(e=>e.dataset.seg),
-                detalhes: document.getElementById('e_detalhes').value.trim()};
-            if(tipo==='evento' && !esp.datas.length){alert('Informe ao menos um dia do mês.');return;}
-            state.especiais.push(esp); renderEsp(); previewGrade();
-            document.getElementById('e_nome').value=''; document.getElementById('e_datas').value=''; document.getElementById('e_detalhes').value='';
-            document.querySelectorAll('.seg-tag.on').forEach(e=>e.classList.remove('on'));
-        }
-        function rmEsp(i){ state.especiais.splice(i,1); renderEsp(); previewGrade(); }
-        function renderEsp(){
-            const box=document.getElementById('espList');
-            if(!state.especiais.length){ box.innerHTML='<p class="hint">Nenhum tema de mês ainda (opcional).</p>'; return; }
-            box.innerHTML=state.especiais.map((e,i)=>{
-                let meta = e.tipo==='evento'?`dias ${e.datas.join(', ')} · ${e.cobertura}`:`toda ${e.dia_semana} · ${e.cobertura}`;
-                if(e.segmentos_alvo.length) meta+=` · ${e.segmentos_alvo.join('/')}`;
-                return `<div class="esp-card"><div class="top"><div><span class="tag tag-${e.tipo}">${e.tipo}</span> <b>${e.nome}</b></div><button class="rm-btn" onclick="rmEsp(${i})">✕</button></div><div class="meta">${meta}</div></div>`;
-            }).join('');
-        }
-
-        // ===================== PREVIEW (instantâneo) =====================
-        function previewGrade(){
-            const mes=parseInt(document.getElementById('cal_mes').value), ano=parseInt(document.getElementById('cal_ano').value)||2026;
-            state.resultado={mes,ano,grade:montarGrade(mes,ano),combos:[],preview:true};
-            document.getElementById('combosCard').style.display='none';
-            document.getElementById('btnSaveCal').disabled=true;
-            renderCalendario();
-        }
-
-        function renderCalendario(){
-            const r=state.resultado; if(!r) return;
-            document.getElementById('outputViewerCal').style.display='block';
-            document.getElementById('calTitle').innerText=`📅 Calendário ${String(r.mes).padStart(2,'0')}/${r.ano}`;
-            document.getElementById('calSubtitle').innerText = r.preview
-                ? `Prévia: ${r.grade.length} disparos. Edite os temas e veja atualizar. Gere as copies quando estiver pronto.`
-                : `${r.grade.length} disparos com copy gerada e revisada.`;
-            const combosCard=document.getElementById('combosCard');
-            if(r.combos && r.combos.length){
-                combosCard.style.display='block';
-                document.getElementById('combosGrid').innerHTML=r.combos.map(c=>{
-                    const cls=c.status==='APROVADO'?'badge-green':'badge-yellow';
-                    const crit=c.revisao&&c.revisao.criticas_e_sugestoes?c.revisao.criticas_e_sugestoes:'';
-                    return `<div class="checklist-item"><span>${c.tema} · ${c.canal} · ${c.segmento} <span style="color:var(--text-muted)">(${c.qtd})</span>${crit?`<div style="color:#fca5a5;font-size:11px">${crit}</div>`:''}</span><span class="checklist-badge ${cls}">${c.status}</span></div>`;
-                }).join('');
-            } else combosCard.style.display='none';
-
-            const fn=document.getElementById('fltNatureza').value, fs=document.getElementById('fltSegmento').value, fc=document.getElementById('fltCanal').value;
-            const rows=r.grade.filter(x=>(!fn||x.natureza===fn)&&(!fs||x.segmento===fs)&&(!fc||x.canal===fc));
-            document.getElementById('calKpi').innerText=`${rows.length} disparos · ${new Set(rows.map(x=>x.dia)).size} dias`;
-            const tbody=document.getElementById('calTableBody'); tbody.innerHTML=''; let diaAtual=null;
-            rows.forEach(x=>{
-                if(x.dia!==diaAtual){ diaAtual=x.dia; const hr=document.createElement('tr'); hr.className='day-header'; hr.innerHTML=`<td colspan="7">Dia ${x.data}</td>`; tbody.appendChild(hr); }
-                const tr=document.createElement('tr');
-                const rev=x.status_revisao==='APROVADO'?'badge-green':(x.status_revisao==='PRÉVIA'?'badge-yellow':'badge-yellow');
-                tr.innerHTML=`<td>${x.hora}</td><td>${x.canal}</td><td>${x.segmento}</td><td class="nat-${x.natureza}">${x.tema}</td><td class="td-title">${x.titulo||'—'}</td><td>${x.texto||'—'}</td><td><span class="checklist-badge ${rev}">${x.status_revisao}</span></td>`;
-                tbody.appendChild(tr);
+          const list = document.getElementById('ms-list');
+          if (list) {
+            let html = `
+              <div style="padding:8px; border-bottom:1px solid var(--border); display:flex; gap:5px; flex-direction:column; position:sticky; top:0; background:var(--bg2); z-index:10;">
+                <button type="button" class="cmp-btn" onclick="document.querySelectorAll('#ms-list input').forEach(cb => cb.checked = false); updateAll();" style="width:100%; border-color:var(--border2);">Limpar Seleção</button>
+                <button type="button" class="cmp-btn" onclick="document.getElementById('ms-list').classList.remove('open');" style="width:100%; background:var(--accent); color:#000; border-color:var(--accent); font-weight:500;">OK / Fechar</button>
+              </div>
+            `;
+            crmMidiasValidas.forEach(o => {
+              html += '<label class="ms-item"><input type="checkbox" value="' + o + '" onchange="updateAll()"><div><div>' + o + '</div><div class="ms-summary">Receita: ' + fmtR(crmMidiasMap[o]) + '</div></div></label>';
             });
-        }
+            list.innerHTML = html;
+          }
 
-        // ===================== GERAR COMPLETO (servidor) =====================
-        async function gerarCompleto(){
-            const mes=parseInt(document.getElementById('cal_mes').value), ano=parseInt(document.getElementById('cal_ano').value)||2026;
-            const temas=[
-                ...state.perenes.map(p=>({nome:p.nome,tipo:'perene',datas:[],dia_semana:'',cobertura:'parcial',segmentos_alvo:[],detalhes:p.detalhes})),
-                ...state.especiais.map(e=>({...e}))
-            ];
-            const cons=document.getElementById('calConsole'); cons.style.display='block';
-            cons.innerHTML='[INFO] Gerando calendário completo (copy + revisão)...<br>';
-            const btn=document.getElementById('btnGerarCal'); btn.disabled=true; const orig=btn.innerHTML; btn.innerHTML="<span class='pulse'>⚙️ Processando...</span>";
-            const it=setInterval(()=>{cons.innerHTML+='[AGÊNCIA] Copywriter + Revisor nas combinações...<br>';cons.scrollTop=cons.scrollHeight;},4000);
-            try{
-                const res=await fetch(`${API_BASE}/gerar_calendario`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mes,ano,temas,detalhes_gerais:document.getElementById('cal_objetivo').value})});
-                const data=await res.json(); clearInterval(it);
-                state.resultado={...data,preview:false};
-                cons.innerHTML+=`[SUCCESS] ${data.total} disparos gerados e revisados.<br>`; cons.scrollTop=cons.scrollHeight;
-                document.getElementById('btnSaveCal').disabled=false;
-                renderCalendario();
-            }catch(err){
-                clearInterval(it);
-                cons.innerHTML+='[ERRO] Servidor local não respondeu. Rode: py agencia_crm.py<br>';
-                alert("Para gerar as copies é preciso rodar o servidor: abra o terminal na pasta e execute 'py agencia_crm.py'. Depois acesse http://localhost:8080/. A prévia da grade funciona sem servidor.");
-            }finally{ btn.disabled=false; btn.innerHTML=orig; }
-        }
+          document.addEventListener('click', e => { if (!e.target.closest('.multi-select')) { const l = document.getElementById('ms-list'); if (l) l.classList.remove('open') } });
 
-        document.getElementById('btnSaveCal').addEventListener('click', async function(){
-            const r=state.resultado; if(!r||!r.grade.length||r.preview){alert('Gere as copies antes de agendar.');return;}
-            const btn=this; btn.disabled=true; btn.innerText='💾 Salvando...';
-            const campanhas=r.grade.map(x=>({data_hora:x.data_hora,canal:x.canal,segmento:x.segmento_insider,campanha_id:x.campanha_id,titulo:x.titulo,texto:x.texto,imagem:'',link:''}));
-            try{
-                const res=await fetch(`${API_BASE}/save_massa`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({campanhas})});
-                const j=await res.json(); alert(j.success?`Sucesso! ${campanhas.length} disparos agendados no Sheets.`:'Erro ao agendar.');
-            }catch(e){ alert('Erro de conexão ao salvar.'); }
-            finally{ btn.disabled=false; btn.innerText='💾 Agendar tudo no Sheets'; }
-        });
+          updateAll();
+        },
+        error: () => { document.getElementById('status-txt').textContent = 'Erro ao carregar dados'; }
+      });
+    }
 
-        // ===================== TABS =====================
-        const TAB_MAP={'tab-calendario':['config-calendario','view-calendario'],'tab-unitario':['config-unitario','view-unitario'],'tab-design':['config-design','view-design']};
-        function switchTab(tabId){
-            document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-            document.querySelectorAll('.panel-content').forEach(p=>p.classList.remove('active'));
-            const btn=document.querySelector(`[data-tab="${tabId}"]`); if(btn) btn.classList.add('active');
-            (TAB_MAP[tabId]||[]).forEach(id=>{const el=document.getElementById(id); if(el) el.classList.add('active');});
-        }
-
-        // ===================== UNITÁRIO =====================
-        document.getElementById('briefingForm').addEventListener('submit', async function(e){
-            e.preventDefault();
-            document.getElementById('emptyStateUnitario').style.display='none'; document.getElementById('outputViewerUnitario').style.display='none';
-            document.getElementById('progressContainer').style.display='grid';
-            const btn=document.getElementById('btnSubmit'); btn.disabled=true; btn.innerHTML="<span class='pulse'>⚙️ Processando...</span>";
-            resetPills(); updatePill('planner','active','Trabalhando...');
-            const briefing={campanha_id:val('campanha_id'),tema:val('tema'),segmento:val('segmento'),canal:val('canal'),data_hora:val('data_hora'),detalhes:val('detalhes')};
-            try{
-                const res=await fetch(`${API_BASE}/briefing`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(briefing)});
-                const data=await res.json();
-                updatePill('planner','completed','Concluído'); updatePill('copywriter','active','Redigindo...'); await delay(600);
-                updatePill('copywriter','completed','Concluído'); updatePill('designer','active','Criando...'); await delay(600);
-                updatePill('designer','completed','Concluído'); updatePill('reviewer','active','Revisando...'); await delay(600);
-                updatePill('reviewer','completed','Concluído'); renderUnitario(data,briefing);
-            }catch(err){ alert("Servidor local não respondeu. Rode 'py agencia_crm.py' na porta 8080."); document.getElementById('emptyStateUnitario').style.display='flex'; document.getElementById('progressContainer').style.display='none'; }
-            finally{ btn.disabled=false; btn.innerHTML="<span>🚀 Iniciar Criação</span>"; }
-        });
-        document.getElementById('btnSaveUnitario').addEventListener('click', async function(){
-            if(!window.campanhaGerada) return; const btn=this; btn.disabled=true; btn.innerText="💾 Salvando...";
-            const payload={...window.campanhaGerada,titulo:val('final_title'),texto:val('final_message')};
-            try{ const res=await fetch(`${API_BASE}/save`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}); const j=await res.json(); alert(j.success?"Agendado no Sheets!":"Erro ao salvar."); }
-            catch(e){ alert("Erro de conexão."); } finally{ btn.disabled=false; btn.innerText="💾 Agendar no Sheets"; }
-        });
-        function renderUnitario(data,briefing){
-            document.getElementById('outputViewerUnitario').style.display='block';
-            document.getElementById('plannerContent').innerHTML=fmt(data.planejamento)+"<hr style='margin:20px 0;border:0;border-top:1px solid var(--border-color)'>"+fmt(data.copys);
-            const rev=data.revisao;
-            setBadge('check-ortografia',rev.checklist_ortografia); setBadge('check-insider',rev.checklist_insider);
-            setBadge('check-futebol',rev.checklist_futebol); setBadge('check-mescla',rev.checklist_mescla_temas);
-            const cb=document.getElementById('critiquesContainer');
-            if(rev.criticas_e_sugestoes && rev.criticas_e_sugestoes!=='Nenhum'){cb.style.display='block';document.getElementById('critiquesText').innerText=rev.criticas_e_sugestoes;} else cb.style.display='none';
-            const t=document.getElementById('approvalTitle'),s=document.getElementById('approvalSubtitle'),b=document.getElementById('btnSaveUnitario');
-            if(rev.status==='APROVADO'){t.innerText='🛡️ CAMPANHA APROVADA';t.style.color='var(--primary)';s.innerText='Diretrizes de CRM seguras.';b.disabled=false;}
-            else{t.innerText='⚠️ CAMPANHA BLOQUEADA';t.style.color='var(--danger)';s.innerText='Revisão detectou violações.';b.disabled=false;}
-            document.getElementById('final_title').value=rev.copys_revisadas?.titulo_sugerido||briefing.tema;
-            document.getElementById('final_message').value=rev.copys_revisadas?.mensagem_sugerida||"";
-            window.campanhaGerada={data_hora:briefing.data_hora,canal:briefing.canal,segmento:briefing.segmento,campanha_id:briefing.campanha_id,imagem:"",link:""};
-        }
-        function setBadge(id,v){ const el=document.getElementById(id); v=v||"Pendente"; el.innerText=v; const x=v.toLowerCase();
-            if(x.includes('verde')||x.includes('correto')||x.includes('conformidade')||x.includes('variação')||x.includes('válido'))el.className='checklist-badge badge-green';
-            else if(x.includes('vermelho')||x.includes('erro')||x.includes('proibido'))el.className='checklist-badge badge-red'; else el.className='checklist-badge badge-yellow'; }
-        function resetPills(){['planner','copywriter','designer','reviewer'].forEach(p=>{document.getElementById(`pill-${p}`).className='agent-pill';document.getElementById(`status-${p}`).innerText='Aguardando...';});}
-        function updatePill(n,st,txt){document.getElementById(`pill-${n}`).className=`agent-pill ${st}`;document.getElementById(`status-${n}`).innerText=txt;}
-        function delay(ms){return new Promise(r=>setTimeout(r,ms));}
-        function val(id){return document.getElementById(id).value;}
-        function fmt(t){ if(!t)return""; return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/### (.*?)\n/g,'<h3>$1</h3>').replace(/## (.*?)\n/g,'<h2>$1</h2>').replace(/# (.*?)\n/g,'<h1>$1</h1>').replace(/- (.*?)\n/g,'• $1<br>').replace(/\n/g,'<br>'); }
-
-        // ===================== LOGIN =====================
-        async function fazerLogin(){
-            const u=document.getElementById('lg_user').value.trim(), p=document.getElementById('lg_pass').value;
-            const err=document.getElementById('loginErr'); err.style.display='none';
-            try{
-                const res=await fetch(`${API_BASE}/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usuario:u,senha:p})});
-                const j=await res.json();
-                if(j.success){ AUTH_TOKEN=j.token; localStorage.setItem('crm_token',AUTH_TOKEN); localStorage.setItem('crm_user',j.usuario||u); mostrarApp(); }
-                else { err.style.display='block'; }
-            }catch(e){ err.innerText='Servidor offline. Rode py agencia_crm.py.'; err.style.display='block'; }
-        }
-        function logout(){ AUTH_TOKEN=''; localStorage.removeItem('crm_token'); localStorage.removeItem('crm_user'); document.getElementById('loginOverlay').classList.add('show'); }
-        function mostrarApp(){
-            document.getElementById('loginOverlay').classList.remove('show');
-            const u=localStorage.getItem('crm_user');
-            if(u){ document.getElementById('userChip').innerText='👤 '+u; document.getElementById('logoutLink').style.display='inline'; }
-        }
-        async function gateAuth(){
-            try{ const c=new AbortController(); setTimeout(()=>c.abort(),1500);
-                const res=await fetch(`${API_BASE}/ping`,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}',signal:c.signal});
-                const j=await res.json(); AUTH_REQUIRED=!!j.auth_required;
-            }catch(e){ AUTH_REQUIRED=true; }
-            if(AUTH_REQUIRED && !AUTH_TOKEN){ document.getElementById('loginOverlay').classList.add('show'); }
-            else { mostrarApp(); }
-        }
-
-        // ===================== BRIEFING DESIGN =====================
-        let designResultado=null;
-        document.querySelectorAll('.canal-tag').forEach(el=>el.addEventListener('click',()=>el.classList.toggle('on')));
-        async function gerarBriefingDesign(){
-            const canais=Array.from(document.querySelectorAll('.canal-tag.on')).map(e=>e.dataset.canal);
-            if(!canais.length){ alert('Selecione ao menos um canal.'); return; }
-            const payload={ tema:val('d_tema'), objetivo:val('d_objetivo'), publico:val('d_publico'), oferta:val('d_oferta'), tom:val('d_tom'), obrigatorios:val('d_obrig'), canais };
-            if(!payload.tema){ alert('Informe a campanha/tema.'); return; }
-            const btn=document.getElementById('btnDesign'); btn.disabled=true; const orig=btn.innerHTML; btn.innerHTML="<span class='pulse'>⚙️ Gerando briefing...</span>";
-            document.getElementById('emptyStateDesign').style.display='none';
-            try{
-                const res=await fetch(`${API_BASE}/briefing_design`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-                if(res.status===401){ alert('Sessão expirada. Faça login novamente.'); logout(); return; }
-                const data=await res.json(); designResultado=data; renderDesign(data);
-            }catch(e){ alert("Servidor offline. Rode 'py agencia_crm.py' e tente de novo."); document.getElementById('emptyStateDesign').style.display='flex'; }
-            finally{ btn.disabled=false; btn.innerHTML=orig; }
-        }
-        function renderDesign(data){
-            document.getElementById('outputViewerDesign').style.display='block';
-            document.getElementById('designTitle').innerText='🎨 Briefing: '+(data.campanha||'');
-            const box=document.getElementById('pecasContainer');
-            if(!data.pecas || !data.pecas.length){ box.innerHTML='<div class="glass-card">Não foi possível gerar as peças. '+(data.erro||'')+'</div>'; return; }
-            box.innerHTML=data.pecas.map(pc=>{
-                const pal=(pc.paleta||[]).map(c=>`<div class="sw" style="background:${c}" title="${c}"></div>`).join('');
-                const obg=(pc.elementos_obrigatorios||[]).join(', ');
-                return `<div class="glass-card peca-card">
-                    <h3>${iconeCanal(pc.canal)} ${pc.canal}</h3><div class="fmt">${pc.formato||''}</div>
-                    <div class="peca-sec"><div class="k">Objetivo</div><div class="v">${pc.objetivo||''}</div></div>
-                    <div class="peca-sec"><div class="k">Copy</div><div class="v"><b>${(pc.copy&&pc.copy.titulo)||''}</b><br>${(pc.copy&&pc.copy.corpo)||''}<br><span style="color:var(--primary)">CTA: ${(pc.copy&&pc.copy.cta)||''}</span></div></div>
-                    <div class="peca-sec"><div class="k">Conceito visual</div><div class="v">${pc.conceito_visual||''}</div></div>
-                    <div class="peca-sec"><div class="k">Paleta</div><div class="swatches">${pal}</div></div>
-                    <div class="peca-sec"><div class="k">Elementos obrigatórios</div><div class="v">${obg}</div></div>
-                    <div class="peca-sec"><div class="k">Prompt de imagem (IA)</div><div class="prompt-box">${pc.prompt_imagem||''}</div></div>
-                </div>`;
-            }).join('');
-        }
-        function iconeCanal(c){ return ({'WhatsApp':'💬','Email':'✉️','App Push':'📱','Web Push':'🌐'})[c]||'🎨'; }
-        function baixarBriefingDesign(){
-            if(!designResultado) return;
-            let md=`# Briefing de Design — ${designResultado.campanha||''}\n\n`;
-            (designResultado.pecas||[]).forEach(pc=>{
-                md+=`## ${pc.canal}\n`;
-                md+=`**Formato:** ${pc.formato||''}\n\n`;
-                md+=`**Objetivo:** ${pc.objetivo||''}\n\n`;
-                md+=`**Copy**\n- Título: ${(pc.copy&&pc.copy.titulo)||''}\n- Corpo: ${(pc.copy&&pc.copy.corpo)||''}\n- CTA: ${(pc.copy&&pc.copy.cta)||''}\n\n`;
-                md+=`**Conceito visual:** ${pc.conceito_visual||''}\n\n`;
-                md+=`**Paleta:** ${(pc.paleta||[]).join(', ')}\n\n`;
-                md+=`**Elementos obrigatórios:** ${(pc.elementos_obrigatorios||[]).join(', ')}\n\n`;
-                md+=`**Prompt de imagem:** ${pc.prompt_imagem||''}\n\n---\n\n`;
-            });
-            const blob=new Blob([md],{type:'text/markdown;charset=utf-8'});
-            const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
-            a.download=`briefing_design_${(designResultado.campanha||'campanha').toLowerCase().replace(/[^a-z0-9]+/g,'_')}.md`;
-            a.click(); URL.revokeObjectURL(a.href);
-        }
-
-        // ===================== STATUS SERVIDOR =====================
-        async function checarServidor(){
-            const badge=document.getElementById('statusBadge'), txt=document.getElementById('statusTxt');
-            try{ const c=new AbortController(); setTimeout(()=>c.abort(),1500);
-                await fetch(`${API_BASE}/ping`,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}',signal:c.signal});
-                badge.classList.remove('off'); txt.innerText='Servidor online';
-            }catch(e){ badge.classList.add('off'); txt.innerText='Servidor offline (prévia funciona)'; }
-        }
-
-        // ===================== INIT =====================
-        renderPerenes(); renderEsp(); onEspTipo(); previewGrade(); checarServidor(); gateAuth();
-    </script>
+    resetFilters(true);
+    loadData();
+  </script>
 </body>
 </html>
