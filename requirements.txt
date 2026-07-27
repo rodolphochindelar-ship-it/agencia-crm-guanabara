@@ -1,0 +1,5 @@
+# A API (agencia_crm.py) usa apenas a biblioteca padrao do Python.
+# As dependencias abaixo sao para a integracao com Google Sheets (crm_agent.py):
+gspread>=6.0.0
+google-auth>=2.0.0
+google-auth-oauthlib>=1.0.0
