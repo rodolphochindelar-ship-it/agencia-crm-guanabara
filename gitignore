@@ -1,0 +1,14 @@
+# Segredos - NUNCA versionar
+secrets.local.json
+users.json
+credenciais*.json
+*credentials*.json
+service_account*.json
+.env
+.env.*
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
